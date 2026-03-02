@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Camera Test</title>
+<style>
+body{font-family:system-ui;margin:16px;}
+video{width:100%;background:#000;border-radius:12px;}
+button{padding:12px 14px;font-weight:700;}
+pre{background:#111827;color:#e5e7eb;padding:10px;border-radius:12px;white-space:pre-wrap;}
+</style>
+</head>
+<body>
+
+<button id="start">カメラ開始</button>
+<video id="v" playsinline muted></video>
+<pre id="log">log: ready</pre>
+
+<script>
+const v=document.getElementById('v');
+const logEl=document.getElementById('log');
+const log=(m)=>logEl.textContent="log: "+m;
+
+document.getElementById('start').onclick=async()=>{
+try{
+log("requesting camera...");
+const stream=await navigator.mediaDevices.getUserMedia({
+video:{facingMode:{ideal:"environment"}},
+audio:false
+});
+v.srcObject=stream;
+await v.play();
+log("OK: playing");
+}catch(e){
+log("ERROR: "+(e?.name||"")+" "+(e?.message||e));
+alert("ERROR: "+(e?.name||"")+"\n"+(e?.message||e));
+}
+};
+</script>
+
+</body>
+</html>
