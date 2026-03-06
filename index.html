@@ -3,150 +3,223 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
-  <title>現品票・品番ラベル 突合（1入力方式）</title>
+  <title>現品票・品番ラベル 突合（Enter確定）</title>
   <style>
+    :root{
+      --bg:#f3f4f6;
+      --card:#ffffff;
+      --text:#111827;
+      --muted:#6b7280;
+      --border:#d1d5db;
+      --dark:#111827;
+      --ok-bg:#dcfce7;
+      --ok-border:#16a34a;
+      --ok-text:#14532d;
+      --ng-bg:#fee2e2;
+      --ng-border:#dc2626;
+      --ng-text:#7f1d1d;
+      --wait-bg:#e0f2fe;
+      --wait-border:#0284c7;
+      --wait-text:#0c4a6e;
+    }
+
+    * { box-sizing: border-box; }
+
     body {
-      font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans JP", sans-serif;
       margin: 0;
-      background: #f6f7f9;
-      color: #111827;
+      font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans JP", sans-serif;
+      background: var(--bg);
+      color: var(--text);
     }
+
     header {
-      padding: 14px 16px;
-      background: #111827;
+      background: var(--dark);
       color: #fff;
-      font-weight: 700;
-      font-size: 20px;
+      padding: 16px 18px;
+      font-size: 22px;
+      font-weight: 800;
     }
+
     main {
-      max-width: 860px;
+      max-width: 980px;
       margin: 0 auto;
-      padding: 16px 16px 90px;
+      padding: 16px 16px 100px;
     }
+
     .card {
-      background: #fff;
-      border-radius: 16px;
+      background: var(--card);
+      border-radius: 18px;
       padding: 16px;
       box-shadow: 0 8px 24px rgba(0,0,0,.06);
-      margin-bottom: 14px;
+      margin-bottom: 16px;
     }
+
     .row {
       display: flex;
-      gap: 10px;
       flex-wrap: wrap;
+      gap: 10px;
     }
+
     button {
       border: 0;
       border-radius: 12px;
-      padding: 12px 16px;
+      padding: 13px 18px;
       font-size: 16px;
-      font-weight: 700;
+      font-weight: 800;
       cursor: pointer;
-      background: #111827;
+      background: var(--dark);
       color: #fff;
     }
-    button.secondary { background: #374151; }
-    button.danger { background: #b91c1c; }
+
+    button.secondary {
+      background: #374151;
+    }
+
+    button.danger {
+      background: #b91c1c;
+    }
 
     .badge {
       display: inline-block;
-      padding: 6px 10px;
+      padding: 7px 12px;
       border-radius: 999px;
-      font-weight: 800;
       font-size: 14px;
+      font-weight: 900;
     }
-    .wait { background: #e5e7eb; color: #111827; }
-    .ok { background: #dcfce7; color: #166534; }
-    .ng { background: #fee2e2; color: #991b1b; }
+
+    .badge.wait {
+      background: #e5e7eb;
+      color: #111827;
+    }
+
+    .badge.ok {
+      background: #dcfce7;
+      color: #166534;
+    }
+
+    .badge.ng {
+      background: #fee2e2;
+      color: #991b1b;
+    }
 
     .hint {
-      color: #6b7280;
-      font-size: 13px;
-      line-height: 1.6;
-      margin-top: 10px;
+      margin-top: 12px;
+      color: var(--muted);
+      line-height: 1.7;
+      font-size: 14px;
     }
 
-    .field { margin-top: 14px; }
+    .input-panel {
+      border: 3px solid var(--dark);
+      border-radius: 18px;
+      background: #f9fafb;
+      padding: 16px;
+      margin-top: 12px;
+    }
+
     .label {
+      font-weight: 800;
+      margin-bottom: 8px;
+      font-size: 16px;
+    }
+
+    .input-caption {
+      font-size: 28px;
+      font-weight: 900;
+      margin-bottom: 10px;
+    }
+
+    .input-subcaption {
+      font-size: 18px;
       font-weight: 700;
-      margin-bottom: 6px;
+      color: #374151;
+      margin-bottom: 14px;
+      line-height: 1.5;
     }
 
     input[type="text"] {
       width: 100%;
-      box-sizing: border-box;
-      padding: 16px 14px;
-      border: 2px solid #d1d5db;
-      border-radius: 12px;
-      font-size: 20px;
+      padding: 18px 16px;
+      border: 3px solid var(--border);
+      border-radius: 14px;
+      font-size: 24px;
       background: #fff;
     }
+
     input[type="text"]:focus {
       outline: none;
-      border-color: #111827;
-      box-shadow: 0 0 0 4px rgba(17,24,39,.08);
-    }
-
-    .active-box {
-      border: 2px solid #111827;
-      background: #f9fafb;
-      border-radius: 14px;
-      padding: 12px;
-      margin-top: 10px;
+      border-color: var(--dark);
+      box-shadow: 0 0 0 5px rgba(17,24,39,.08);
     }
 
     .mono {
       font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
       word-break: break-all;
-      font-size: 18px;
+      font-size: 20px;
+      line-height: 1.6;
     }
 
-    .result-box {
-      border-radius: 16px;
-      padding: 18px;
-      margin-top: 12px;
+    .field {
+      margin-top: 16px;
+    }
+
+    .judge-screen {
+      border-radius: 22px;
+      border: 4px solid #d1d5db;
       background: #f9fafb;
-      border: 2px solid #e5e7eb;
-    }
-    .ok-bg {
-      background: #ecfdf5;
-      border-color: #22c55e;
-    }
-    .ng-bg {
-      background: #fef2f2;
-      border-color: #ef4444;
+      padding: 28px 20px;
+      text-align: center;
+      min-height: 280px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
     }
 
-    .big {
-      font-size: 36px;
-      font-weight: 900;
-      line-height: 1.2;
+    .judge-screen.wait {
+      background: var(--wait-bg);
+      border-color: var(--wait-border);
+      color: var(--wait-text);
     }
 
-    .subbig {
-      font-size: 22px;
-      font-weight: 800;
-      margin-top: 8px;
+    .judge-screen.ok {
+      background: var(--ok-bg);
+      border-color: var(--ok-border);
+      color: var(--ok-text);
     }
 
-    .guide-box {
-      border-radius: 16px;
-      padding: 18px;
-      margin-top: 10px;
-      background: #eff6ff;
-      border: 2px solid #93c5fd;
+    .judge-screen.ng {
+      background: var(--ng-bg);
+      border-color: var(--ng-border);
+      color: var(--ng-text);
     }
 
-    .guide-title {
+    .judge-title {
       font-size: 26px;
       font-weight: 900;
-      margin-bottom: 8px;
+      margin-bottom: 12px;
     }
 
-    .guide-text {
-      font-size: 18px;
-      font-weight: 700;
+    .judge-main {
+      font-size: 72px;
+      font-weight: 1000;
+      line-height: 1.1;
+      letter-spacing: .04em;
+    }
+
+    .judge-sub {
+      margin-top: 14px;
+      font-size: 26px;
+      font-weight: 900;
       line-height: 1.5;
+      white-space: pre-line;
+    }
+
+    .judge-detail {
+      margin-top: 18px;
+      font-size: 22px;
+      font-weight: 800;
+      line-height: 1.6;
+      white-space: pre-line;
     }
 
     .log {
@@ -157,8 +230,7 @@
       white-space: pre-wrap;
       font-size: 13px;
       line-height: 1.5;
-      margin-top: 10px;
-      max-height: 260px;
+      max-height: 280px;
       overflow: auto;
     }
 
@@ -167,12 +239,42 @@
       left: 0;
       right: 0;
       bottom: 0;
-      background: rgba(246,247,249,.94);
+      background: rgba(243,244,246,.96);
       backdrop-filter: blur(8px);
       border-top: 1px solid #e5e7eb;
       padding: 10px 14px;
+      color: var(--muted);
       font-size: 13px;
-      color: #6b7280;
+    }
+
+    @media (max-width: 640px) {
+      .input-caption {
+        font-size: 23px;
+      }
+
+      .input-subcaption {
+        font-size: 16px;
+      }
+
+      input[type="text"] {
+        font-size: 20px;
+      }
+
+      .judge-main {
+        font-size: 56px;
+      }
+
+      .judge-sub {
+        font-size: 22px;
+      }
+
+      .judge-detail {
+        font-size: 18px;
+      }
+
+      .mono {
+        font-size: 17px;
+      }
     }
   </style>
 </head>
@@ -185,15 +287,14 @@
         <button id="btnFocus">入力欄へフォーカス</button>
         <button id="btnReset" class="danger">最初に戻す</button>
       </div>
+
       <div class="hint">
         使用方法：<br>
-        ① Bluetoothバーコードリーダーをスマホに接続（HID/キーボードモード）<br>
-        ② 1回目で現品票データを読む（品番 + 空白 + 数量 を含むデータ）<br>
-        ③ 画面に品番・数量を表示後、自動で2回目待受へ切替<br>
-        ④ 2回目で品番ラベルを読む（10〜12桁の英数字）<br>
-        ⑤ 一致 / 不一致 を大きく表示<br>
-        ⑥ 「最初に戻す」を押して次の突合へ進む<br>
-        ※ 多くのバーコードリーダーは読取後に Enter を送信するため、自動確定されます。
+        ① 1回目で現品票バーコードを読み込み、Enterで確定<br>
+        ② 1回目データから「品番（10〜12桁英数字）＋数量」を抽出して表示<br>
+        ③ 2回目で品番ラベルバーコードを読み込み、Enterで確定<br>
+        ④ 1回目品番と2回目品番を突合し、判定を大きく表示<br>
+        ⑤ 判定後は「最初に戻す」を押して次の処理へ進む
       </div>
     </div>
 
@@ -203,12 +304,10 @@
         <span id="stateBadge" class="badge wait">1回目待受</span>
       </div>
 
-      <div class="guide-box" id="guideBox">
-        <div class="guide-title" id="guideTitle">1回目待受</div>
-        <div class="guide-text" id="guideText">現品票を読み込んでください</div>
-      </div>
+      <div class="input-panel">
+        <div id="inputCaption" class="input-caption">1回目待受</div>
+        <div id="inputSubcaption" class="input-subcaption">現品票バーコードを読み込んで、Enterキーで確定してください</div>
 
-      <div class="active-box">
         <div class="label">入力欄（1回目・2回目共通）</div>
         <input
           id="scanInput"
@@ -219,6 +318,15 @@
           spellcheck="false"
           placeholder="ここにバーコードリーダーで入力"
         />
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="judge-screen wait" id="judgeScreen">
+        <div class="judge-title">判定表示</div>
+        <div class="judge-main" id="judgeMain">待機中</div>
+        <div class="judge-sub" id="judgeSub">1回目の現品票を読んでください</div>
+        <div class="judge-detail" id="judgeDetail"></div>
       </div>
     </div>
 
@@ -237,12 +345,6 @@
         <div class="label">2回目 品番ラベル</div>
         <div id="secondCodeView" class="mono">—</div>
       </div>
-
-      <div class="result-box" id="resultBox">
-        <div class="label">判定</div>
-        <div id="resultText" class="big">—</div>
-        <div id="resultSubText" class="subbig"></div>
-      </div>
     </div>
 
     <div class="card">
@@ -252,7 +354,7 @@
   </main>
 
   <footer>
-    推奨運用：不一致時はその場で作業中断 → 保留 → 現物・現品票・ラベル再確認。
+    推奨運用：不一致時はその場で作業中断 → 現物・現品票・品番ラベルを再確認。
   </footer>
 
   <script>
@@ -261,20 +363,20 @@
     const btnReset = document.getElementById('btnReset');
 
     const stateBadge = document.getElementById('stateBadge');
-    const guideTitle = document.getElementById('guideTitle');
-    const guideText = document.getElementById('guideText');
+    const inputCaption = document.getElementById('inputCaption');
+    const inputSubcaption = document.getElementById('inputSubcaption');
+
+    const judgeScreen = document.getElementById('judgeScreen');
+    const judgeMain = document.getElementById('judgeMain');
+    const judgeSub = document.getElementById('judgeSub');
+    const judgeDetail = document.getElementById('judgeDetail');
 
     const firstRawView = document.getElementById('firstRawView');
     const firstParsedView = document.getElementById('firstParsedView');
     const secondCodeView = document.getElementById('secondCodeView');
-
-    const resultBox = document.getElementById('resultBox');
-    const resultText = document.getElementById('resultText');
-    const resultSubText = document.getElementById('resultSubText');
-
     const logEl = document.getElementById('log');
 
-    let stage = 1; // 1: 現品票待受, 2: 品番ラベル待受, 3: 判定後停止
+    let stage = 1; // 1: 現品票入力待受 / 2: 品番ラベル入力待受 / 3: 判定完了
     let firstData = {
       raw: "",
       code: "",
@@ -292,36 +394,6 @@
 
     function clearLog() {
       logEl.textContent = "log: ready";
-    }
-
-    function setState(type, text) {
-      stateBadge.className = "badge " + type;
-      stateBadge.textContent = text;
-    }
-
-    function setGuide(title, text) {
-      guideTitle.textContent = title;
-      guideText.textContent = text;
-    }
-
-    function beep(freq = 880, ms = 120) {
-      try {
-        const ctx = new (window.AudioContext || window.webkitAudioContext)();
-        const osc = ctx.createOscillator();
-        const gain = ctx.createGain();
-        osc.frequency.value = freq;
-        osc.type = "sine";
-        osc.connect(gain);
-        gain.connect(ctx.destination);
-        gain.gain.setValueAtTime(0.0001, ctx.currentTime);
-        gain.gain.exponentialRampToValueAtTime(0.12, ctx.currentTime + 0.01);
-        osc.start();
-        setTimeout(() => {
-          gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 0.02);
-          osc.stop(ctx.currentTime + 0.03);
-          ctx.close();
-        }, ms);
-      } catch (e) {}
     }
 
     function normalizeText(str) {
@@ -343,8 +415,8 @@
     function parseFirstLabel(raw) {
       const text = normalizeText(raw);
 
-      // 「10〜12桁英数字 + 空白 + 数量」を抽出
-      const match = text.match(/([A-Z0-9]{10,12})\s+([0-9]+)/);
+      // 1回目：品番(10～12桁英数字) + 空白 + 数量
+      const match = text.match(/^([A-Z0-9]{10,12})\s+([0-9]+)$/);
 
       if (!match) {
         return {
@@ -363,28 +435,72 @@
       };
     }
 
+    function setBadge(type, text) {
+      stateBadge.className = "badge " + type;
+      stateBadge.textContent = text;
+    }
+
+    function setInputGuide(title, sub) {
+      inputCaption.textContent = title;
+      inputSubcaption.textContent = sub;
+    }
+
+    function setJudge(type, main, sub, detail = "") {
+      judgeScreen.className = "judge-screen " + type;
+      judgeMain.textContent = main;
+      judgeSub.textContent = sub;
+      judgeDetail.textContent = detail;
+    }
+
+    function beep(freq = 880, ms = 120) {
+      try {
+        const ctx = new (window.AudioContext || window.webkitAudioContext)();
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.frequency.value = freq;
+        osc.type = "sine";
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        gain.gain.setValueAtTime(0.0001, ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.12, ctx.currentTime + 0.01);
+        osc.start();
+
+        setTimeout(() => {
+          gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 0.02);
+          osc.stop(ctx.currentTime + 0.03);
+          ctx.close();
+        }, ms);
+      } catch (e) {}
+    }
+
+    function beepNg() {
+      beep(220, 220);
+      setTimeout(() => beep(220, 220), 260);
+    }
+
     function resetAll() {
       stage = 1;
-      firstData = { raw: "", code: "", qty: "" };
+      firstData = {
+        raw: "",
+        code: "",
+        qty: ""
+      };
 
       scanInput.value = "";
       firstRawView.textContent = "—";
       firstParsedView.textContent = "—";
       secondCodeView.textContent = "—";
 
-      resultText.textContent = "—";
-      resultSubText.textContent = "";
-      resultBox.className = "result-box";
-
-      setState("wait", "1回目待受");
-      setGuide("1回目待受", "現品票を読み込んでください");
+      setBadge("wait", "1回目待受");
+      setInputGuide("1回目待受", "現品票バーコードを読み込んで、Enterキーで確定してください");
+      setJudge("wait", "待機中", "1回目の現品票を読んでください", "");
 
       clearLog();
       addLog("reset complete");
       scanInput.focus();
     }
 
-    function acceptFirstScan() {
+    function handleFirstScan() {
       const raw = scanInput.value;
       const parsed = parseFirstLabel(raw);
 
@@ -392,14 +508,16 @@
 
       if (!parsed.ok) {
         firstParsedView.textContent = "抽出失敗";
-        resultText.textContent = "1回目 読取エラー";
-        resultSubText.textContent = "現品票から 品番（10〜12桁）＋数量 を抽出できません";
-        resultBox.className = "result-box ng-bg";
-        setState("ng", "1回目エラー");
-        setGuide("1回目待受", "現品票を再度読み込んでください");
+        setBadge("ng", "1回目エラー");
+        setInputGuide("1回目待受", "現品票バーコードを正しい形式で再入力してください");
+        setJudge(
+          "ng",
+          "読取エラー",
+          "1回目の形式が不正です",
+          "正しい形式：\n品番10～12桁の英数字 + 空白 + 数量"
+        );
         addLog("1回目抽出失敗: " + normalizeText(raw));
-        beep(220, 220);
-        setTimeout(() => beep(220, 220), 260);
+        beepNg();
         scanInput.select();
         return;
       }
@@ -411,102 +529,82 @@
       };
 
       firstParsedView.textContent = `品番: ${parsed.code} / 数量: ${parsed.qty}`;
-      resultText.textContent = "1回目 読取OK";
-      resultSubText.textContent = "2回目で品番ラベルを読み込んでください";
-      resultBox.className = "result-box";
-
-      addLog(`1回目読取: 品番=${parsed.code} / 数量=${parsed.qty}`);
 
       stage = 2;
-      setState("wait", "2回目待受");
-      setGuide("2回目待受", "品番ラベルを読み込んでください");
+      setBadge("wait", "2回目待受");
+      setInputGuide("2回目待受", "品番ラベルバーコードを読み込んで、Enterキーで確定してください");
+      setJudge(
+        "wait",
+        "1回目OK",
+        "2回目の品番ラベルを読んでください",
+        `1回目品番：${parsed.code}\n数量：${parsed.qty}`
+      );
 
+      addLog(`1回目読取OK: 品番=${parsed.code} / 数量=${parsed.qty}`);
       scanInput.value = "";
       scanInput.focus();
       beep(660, 100);
     }
 
-    function judgeSecondScan() {
+    function handleSecondScan() {
       const raw = scanInput.value;
-      const code = normalizeCode(raw);
+      const secondCode = normalizeCode(raw);
 
-      secondCodeView.textContent = code || "—";
+      secondCodeView.textContent = secondCode || "—";
 
-      if (!isValidCode(code)) {
-        resultText.textContent = "2回目 読取エラー";
-        resultSubText.textContent = "品番ラベルは 10〜12桁の英数字 で読んでください";
-        resultBox.className = "result-box ng-bg";
-        setState("ng", "2回目エラー");
-        setGuide("2回目待受", "品番ラベルを再度読み込んでください");
+      if (!isValidCode(secondCode)) {
+        setBadge("ng", "2回目エラー");
+        setInputGuide("2回目待受", "品番ラベルバーコードを正しい形式で再入力してください");
+        setJudge(
+          "ng",
+          "読取エラー",
+          "2回目の形式が不正です",
+          "正しい形式：\n品番10～12桁の英数字のみ"
+        );
         addLog("2回目形式エラー: " + normalizeText(raw));
-        beep(220, 220);
-        setTimeout(() => beep(220, 220), 260);
+        beepNg();
         scanInput.select();
         return;
       }
 
-      if (code === firstData.code) {
-        resultText.textContent = "正解";
-        resultSubText.textContent = `一致：${code} / 数量：${firstData.qty}`;
-        resultBox.className = "result-box ok-bg";
-        setState("ok", "一致");
-        setGuide("判定完了", "「最初に戻す」を押して次の読取へ進んでください");
-        addLog(`突合結果: 正解 / 1回目=${firstData.code} / 2回目=${code} / 数量=${firstData.qty}`);
+      if (secondCode === firstData.code) {
+        setBadge("ok", "一致");
+        setInputGuide("判定完了", "「最初に戻す」を押して次の処理へ進んでください");
+        setJudge(
+          "ok",
+          "正解",
+          "1回目と2回目の品番が一致しました",
+          `品番：${secondCode}\n数量：${firstData.qty}`
+        );
+        addLog(`突合OK: 1回目=${firstData.code} / 2回目=${secondCode} / 数量=${firstData.qty}`);
         beep(1040, 150);
       } else {
-        resultText.textContent = "不一致";
-        resultSubText.textContent = `1回目：${firstData.code} / 2回目：${code} / 数量：${firstData.qty}`;
-        resultBox.className = "result-box ng-bg";
-        setState("ng", "不一致");
-        setGuide("判定完了", "不一致です。現物・現品票・ラベルを確認し、「最初に戻す」を押してください");
-        addLog(`突合結果: 不一致 / 1回目=${firstData.code} / 2回目=${code} / 数量=${firstData.qty}`);
-        beep(220, 220);
-        setTimeout(() => beep(220, 220), 260);
+        setBadge("ng", "不一致");
+        setInputGuide("判定完了", "不一致です。確認後、「最初に戻す」を押してください");
+        setJudge(
+          "ng",
+          "不一致",
+          "1回目と2回目の品番が一致しません",
+          `1回目品番：${firstData.code}\n2回目品番：${secondCode}\n数量：${firstData.qty}`
+        );
+        addLog(`突合NG: 1回目=${firstData.code} / 2回目=${secondCode} / 数量=${firstData.qty}`);
+        beepNg();
       }
 
       stage = 3;
       scanInput.blur();
     }
 
-    function handleScan() {
+    function handleEnter(e) {
+      if (e.key !== "Enter") return;
+      e.preventDefault();
+
       if (stage === 1) {
-        acceptFirstScan();
+        handleFirstScan();
       } else if (stage === 2) {
-        judgeSecondScan();
+        handleSecondScan();
       }
     }
-
-    function onEnter(e) {
-      if (e.key === "Enter") {
-        e.preventDefault();
-        handleScan();
-      }
-    }
-
-    let inputTimer = null;
-    scanInput.addEventListener("input", () => {
-      if (stage === 3) return;
-
-      clearTimeout(inputTimer);
-      inputTimer = setTimeout(() => {
-        const val = normalizeText(scanInput.value);
-        if (!val) return;
-
-        if (stage === 1) {
-          const parsed = parseFirstLabel(scanInput.value);
-          if (parsed.ok) {
-            acceptFirstScan();
-          }
-        } else if (stage === 2) {
-          const code = normalizeCode(scanInput.value);
-          if (isValidCode(code)) {
-            judgeSecondScan();
-          }
-        }
-      }, 250);
-    });
-
-    scanInput.addEventListener("keydown", onEnter);
 
     btnFocus.addEventListener("click", () => {
       if (stage !== 3) {
@@ -516,6 +614,8 @@
     });
 
     btnReset.addEventListener("click", resetAll);
+
+    scanInput.addEventListener("keydown", handleEnter);
 
     document.addEventListener("click", (e) => {
       const tag = e.target.tagName;
