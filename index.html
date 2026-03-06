@@ -3,258 +3,529 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
-  <title>Code39 突合（1回目=正解 / 2回目=照合）</title>
+  <title>現品票・品番ラベル 突合（1入力方式）</title>
   <style>
-    body { font-family: system-ui,-apple-system,"Segoe UI",Roboto,"Noto Sans JP",sans-serif; margin:0; background:#f6f7f9; }
-    header { padding:12px 16px; background:#111827; color:#fff; font-weight:700; }
-    main { padding:14px 16px 90px; max-width:760px; margin:0 auto; }
-    .card { background:#fff; border-radius:14px; padding:14px; box-shadow:0 6px 20px rgba(0,0,0,.06); margin:12px 0; }
-    .row { display:flex; gap:10px; flex-wrap:wrap; }
-    button{ border:0;border-radius:12px;padding:12px 14px;font-size:16px;font-weight:700;background:#111827;color:#fff;cursor:pointer;}
-    button.secondary{ background:#374151; }
-    button.danger{ background:#b91c1c; }
-    button:disabled{ opacity:.5; cursor:not-allowed; }
-    #videoWrap{ overflow:hidden; border-radius:14px; background:#000; }
-    video{ width:100%; height:auto; display:block; background:#000; }
-    .badge{ display:inline-block; padding:6px 10px; border-radius:999px; font-weight:800; }
-    .ok{ background:#dcfce7; color:#166534; }
-    .ng{ background:#fee2e2; color:#991b1b; }
-    .wait{ background:#e5e7eb; color:#111827; }
-    .mono{ font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace; word-break:break-all; }
-    .big{ font-size:20px; font-weight:900; }
-    .hint{ color:#6b7280; font-size:13px; line-height:1.4; }
-    .log{ margin-top:10px; padding:10px; background:#111827; color:#e5e7eb; border-radius:12px; font-size:12px; white-space:pre-wrap; }
+    body {
+      font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans JP", sans-serif;
+      margin: 0;
+      background: #f6f7f9;
+      color: #111827;
+    }
+    header {
+      padding: 14px 16px;
+      background: #111827;
+      color: #fff;
+      font-weight: 700;
+      font-size: 20px;
+    }
+    main {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 16px 16px 90px;
+    }
+    .card {
+      background: #fff;
+      border-radius: 16px;
+      padding: 16px;
+      box-shadow: 0 8px 24px rgba(0,0,0,.06);
+      margin-bottom: 14px;
+    }
+    .row {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    button {
+      border: 0;
+      border-radius: 12px;
+      padding: 12px 16px;
+      font-size: 16px;
+      font-weight: 700;
+      cursor: pointer;
+      background: #111827;
+      color: #fff;
+    }
+    button.secondary { background: #374151; }
+    button.danger { background: #b91c1c; }
+
+    .badge {
+      display: inline-block;
+      padding: 6px 10px;
+      border-radius: 999px;
+      font-weight: 800;
+      font-size: 14px;
+    }
+    .wait { background: #e5e7eb; color: #111827; }
+    .ok { background: #dcfce7; color: #166534; }
+    .ng { background: #fee2e2; color: #991b1b; }
+
+    .hint {
+      color: #6b7280;
+      font-size: 13px;
+      line-height: 1.6;
+      margin-top: 10px;
+    }
+
+    .field { margin-top: 14px; }
+    .label {
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+
+    input[type="text"] {
+      width: 100%;
+      box-sizing: border-box;
+      padding: 16px 14px;
+      border: 2px solid #d1d5db;
+      border-radius: 12px;
+      font-size: 20px;
+      background: #fff;
+    }
+    input[type="text"]:focus {
+      outline: none;
+      border-color: #111827;
+      box-shadow: 0 0 0 4px rgba(17,24,39,.08);
+    }
+
+    .active-box {
+      border: 2px solid #111827;
+      background: #f9fafb;
+      border-radius: 14px;
+      padding: 12px;
+      margin-top: 10px;
+    }
+
+    .mono {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      word-break: break-all;
+      font-size: 18px;
+    }
+
+    .result-box {
+      border-radius: 16px;
+      padding: 18px;
+      margin-top: 12px;
+      background: #f9fafb;
+      border: 2px solid #e5e7eb;
+    }
+    .ok-bg {
+      background: #ecfdf5;
+      border-color: #22c55e;
+    }
+    .ng-bg {
+      background: #fef2f2;
+      border-color: #ef4444;
+    }
+
+    .big {
+      font-size: 36px;
+      font-weight: 900;
+      line-height: 1.2;
+    }
+
+    .subbig {
+      font-size: 22px;
+      font-weight: 800;
+      margin-top: 8px;
+    }
+
+    .guide-box {
+      border-radius: 16px;
+      padding: 18px;
+      margin-top: 10px;
+      background: #eff6ff;
+      border: 2px solid #93c5fd;
+    }
+
+    .guide-title {
+      font-size: 26px;
+      font-weight: 900;
+      margin-bottom: 8px;
+    }
+
+    .guide-text {
+      font-size: 18px;
+      font-weight: 700;
+      line-height: 1.5;
+    }
+
+    .log {
+      background: #111827;
+      color: #e5e7eb;
+      border-radius: 12px;
+      padding: 12px;
+      white-space: pre-wrap;
+      font-size: 13px;
+      line-height: 1.5;
+      margin-top: 10px;
+      max-height: 260px;
+      overflow: auto;
+    }
+
+    footer {
+      position: fixed;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(246,247,249,.94);
+      backdrop-filter: blur(8px);
+      border-top: 1px solid #e5e7eb;
+      padding: 10px 14px;
+      font-size: 13px;
+      color: #6b7280;
+    }
   </style>
 </head>
 <body>
-<header>Code39 突合（1回目=正解 / 2回目=照合）</header>
+  <header>現品票・品番ラベル 突合（Bluetoothバーコードリーダー入力）</header>
 
-<main>
-  <div class="card">
-    <div class="row">
-      <button id="btnStart">カメラ開始</button>
-      <button id="btnStop" class="secondary" disabled>停止</button>
-      <button id="btnReset" class="danger">リセット</button>
+  <main>
+    <div class="card">
+      <div class="row">
+        <button id="btnFocus">入力欄へフォーカス</button>
+        <button id="btnReset" class="danger">最初に戻す</button>
+      </div>
+      <div class="hint">
+        使用方法：<br>
+        ① Bluetoothバーコードリーダーをスマホに接続（HID/キーボードモード）<br>
+        ② 1回目で現品票データを読む（品番 + 空白 + 数量 を含むデータ）<br>
+        ③ 画面に品番・数量を表示後、自動で2回目待受へ切替<br>
+        ④ 2回目で品番ラベルを読む（10〜12桁の英数字）<br>
+        ⑤ 一致 / 不一致 を大きく表示<br>
+        ⑥ 「最初に戻す」を押して次の突合へ進む<br>
+        ※ 多くのバーコードリーダーは読取後に Enter を送信するため、自動確定されます。
+      </div>
     </div>
-    <p class="hint" style="margin:10px 0 0;">
-      ①「正解」をスキャン → ②「現品票」をスキャン → OK/NG → 自動で次へ。<br>
-      ※ iPhoneは「ぁあ → Webサイトの設定 → カメラ：許可」
-    </p>
-    <div id="log" class="log">log: ready</div>
-  </div>
 
-  <div class="card" id="videoWrap">
-    <!-- iPhone対策：muted を付けると play() が通りやすい -->
-    <video id="video" playsinline muted></video>
-  </div>
+    <div class="card">
+      <div>
+        状態：
+        <span id="stateBadge" class="badge wait">1回目待受</span>
+      </div>
 
-  <div class="card">
-    <div>状態：<span id="stateBadge" class="badge wait">待機</span></div>
-    <div style="margin-top:8px;">正解（1回目）：<span id="expected" class="mono">—</span></div>
-    <div style="margin-top:8px;">照合（2回目）：<span id="actual" class="mono">—</span></div>
-    <div style="margin-top:8px;" class="big">判定：<span id="result">—</span></div>
-  </div>
-</main>
+      <div class="guide-box" id="guideBox">
+        <div class="guide-title" id="guideTitle">1回目待受</div>
+        <div class="guide-text" id="guideText">現品票を読み込んでください</div>
+      </div>
 
-<!-- ★同梱版ZXing -->
-<script src="./zxing.js"></script>
+      <div class="active-box">
+        <div class="label">入力欄（1回目・2回目共通）</div>
+        <input
+          id="scanInput"
+          type="text"
+          inputmode="text"
+          autocomplete="off"
+          autocapitalize="characters"
+          spellcheck="false"
+          placeholder="ここにバーコードリーダーで入力"
+        />
+      </div>
+    </div>
 
-<script>
-  // ========= 設定 =========
-  const ENABLE_AUDIO = true;
-  const FORMATS = [
-    ZXing.BarcodeFormat.CODE_39,
-    ZXing.BarcodeFormat.CODE_128,
-    ZXing.BarcodeFormat.CODABAR,
-    ZXing.BarcodeFormat.ITF,
-    ZXing.BarcodeFormat.EAN_13,
-    ZXing.BarcodeFormat.EAN_8
-  ];
+    <div class="card">
+      <div class="field">
+        <div class="label">1回目 現品票 生データ</div>
+        <div id="firstRawView" class="mono">—</div>
+      </div>
 
-  // ========= 状態 =========
-  let expected = null;
-  let stream = null;
-  let reader = null;
-  let lastScanAt = 0;
-  const COOLDOWN_MS = 800;
+      <div class="field">
+        <div class="label">1回目 抽出結果</div>
+        <div id="firstParsedView" class="mono">—</div>
+      </div>
 
-  // ========= UI =========
-  const btnStart = document.getElementById('btnStart');
-  const btnStop  = document.getElementById('btnStop');
-  const btnReset = document.getElementById('btnReset');
-  const videoEl  = document.getElementById('video');
+      <div class="field">
+        <div class="label">2回目 品番ラベル</div>
+        <div id="secondCodeView" class="mono">—</div>
+      </div>
 
-  const elExpected = document.getElementById('expected');
-  const elActual   = document.getElementById('actual');
-  const elResult   = document.getElementById('result');
-  const elBadge    = document.getElementById('stateBadge');
-  const logEl      = document.getElementById('log');
+      <div class="result-box" id="resultBox">
+        <div class="label">判定</div>
+        <div id="resultText" class="big">—</div>
+        <div id="resultSubText" class="subbig"></div>
+      </div>
+    </div>
 
-  function log(msg){ logEl.textContent = "log: " + msg; }
+    <div class="card">
+      <div class="label">ログ</div>
+      <div id="log" class="log">log: ready</div>
+    </div>
+  </main>
 
-  function setBadge(type, text){
-    elBadge.className = 'badge ' + (type || 'wait');
-    elBadge.textContent = text;
-  }
+  <footer>
+    推奨運用：不一致時はその場で作業中断 → 保留 → 現物・現品票・ラベル再確認。
+  </footer>
 
-  function beep(freq=880, ms=120){
-    if (!ENABLE_AUDIO) return;
-    try{
-      const ctx = new (window.AudioContext || window.webkitAudioContext)();
-      const o = ctx.createOscillator();
-      const g = ctx.createGain();
-      o.frequency.value = freq;
-      o.type = 'sine';
-      o.connect(g); g.connect(ctx.destination);
-      g.gain.setValueAtTime(0.0001, ctx.currentTime);
-      g.gain.exponentialRampToValueAtTime(0.12, ctx.currentTime + 0.01);
-      o.start();
-      setTimeout(() => {
-        g.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 0.02);
-        o.stop(ctx.currentTime + 0.03);
-        ctx.close();
-      }, ms);
-    }catch(e){}
-  }
+  <script>
+    const scanInput = document.getElementById('scanInput');
+    const btnFocus = document.getElementById('btnFocus');
+    const btnReset = document.getElementById('btnReset');
 
-  function normalize(text){
-    return String(text || '').trim().toUpperCase();
-  }
+    const stateBadge = document.getElementById('stateBadge');
+    const guideTitle = document.getElementById('guideTitle');
+    const guideText = document.getElementById('guideText');
 
-  function resetAll(){
-    expected = null;
-    elExpected.textContent = '—';
-    elActual.textContent = '—';
-    elResult.textContent = '—';
-    setBadge('wait','待機');
-  }
+    const firstRawView = document.getElementById('firstRawView');
+    const firstParsedView = document.getElementById('firstParsedView');
+    const secondCodeView = document.getElementById('secondCodeView');
 
-  function handleScan(raw){
-    const now = Date.now();
-    if (now - lastScanAt < COOLDOWN_MS) return;
-    lastScanAt = now;
+    const resultBox = document.getElementById('resultBox');
+    const resultText = document.getElementById('resultText');
+    const resultSubText = document.getElementById('resultSubText');
 
-    const code = normalize(raw);
+    const logEl = document.getElementById('log');
 
-    if (!expected){
-      expected = code;
-      elExpected.textContent = code;
-      elActual.textContent = '—';
-      elResult.textContent = '—';
-      setBadge('wait','正解保持 → 次に現品票');
-      beep(660, 90);
-      return;
+    let stage = 1; // 1: 現品票待受, 2: 品番ラベル待受, 3: 判定後停止
+    let firstData = {
+      raw: "",
+      code: "",
+      qty: ""
+    };
+
+    function addLog(msg) {
+      const now = new Date();
+      const hh = String(now.getHours()).padStart(2, '0');
+      const mm = String(now.getMinutes()).padStart(2, '0');
+      const ss = String(now.getSeconds()).padStart(2, '0');
+      logEl.textContent += `\n[${hh}:${mm}:${ss}] ${msg}`;
+      logEl.scrollTop = logEl.scrollHeight;
     }
 
-    elActual.textContent = code;
-    const ok = (expected === code);
-
-    if (ok){
-      elResult.textContent = 'OK（一致）';
-      setBadge('ok','OK');
-      beep(1040, 140);
-    }else{
-      elResult.textContent = 'NG（不一致）';
-      setBadge('ng','NG');
-      beep(220, 220);
-      setTimeout(()=>beep(220, 220), 260);
+    function clearLog() {
+      logEl.textContent = "log: ready";
     }
 
-    expected = null;
-    setTimeout(resetAll, 1200);
-  }
-
-  async function startCamera(){
-    // ZXingがいるか確認
-    if (typeof ZXing === "undefined"){
-      alert("ZXingが読み込めていません（zxing.js を確認）");
-      return;
+    function setState(type, text) {
+      stateBadge.className = "badge " + type;
+      stateBadge.textContent = text;
     }
 
-    btnStart.disabled = true;
-    btnStop.disabled = false;
-    resetAll();
+    function setGuide(title, text) {
+      guideTitle.textContent = title;
+      guideText.textContent = text;
+    }
 
-    try{
-      log("getUserMedia requesting...");
-     stream = await navigator.mediaDevices.getUserMedia({
-      video: {
-        facingMode: { ideal: "environment" },
+    function beep(freq = 880, ms = 120) {
+      try {
+        const ctx = new (window.AudioContext || window.webkitAudioContext)();
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.frequency.value = freq;
+        osc.type = "sine";
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        gain.gain.setValueAtTime(0.0001, ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.12, ctx.currentTime + 0.01);
+        osc.start();
+        setTimeout(() => {
+          gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 0.02);
+          osc.stop(ctx.currentTime + 0.03);
+          ctx.close();
+        }, ms);
+      } catch (e) {}
+    }
 
-        // ★できるだけ高解像度を要求（細いCode39対策）
-        width:  { ideal: 1920 },
-        height: { ideal: 1080 },
+    function normalizeText(str) {
+      return String(str || "")
+        .replace(/\r/g, "")
+        .replace(/\n/g, "")
+        .trim()
+        .toUpperCase();
+    }
 
-        // ★iPhoneで効くことがある
-        frameRate: { ideal: 30 }
-      },
-      audio: false
+    function normalizeCode(str) {
+      return normalizeText(str).replace(/\s+/g, "");
+    }
+
+    function isValidCode(code) {
+      return /^[A-Z0-9]{10,12}$/.test(code);
+    }
+
+    function parseFirstLabel(raw) {
+      const text = normalizeText(raw);
+
+      // 「10〜12桁英数字 + 空白 + 数量」を抽出
+      const match = text.match(/([A-Z0-9]{10,12})\s+([0-9]+)/);
+
+      if (!match) {
+        return {
+          ok: false,
+          raw: text,
+          code: "",
+          qty: ""
+        };
+      }
+
+      return {
+        ok: true,
+        raw: text,
+        code: match[1],
+        qty: match[2]
+      };
+    }
+
+    function resetAll() {
+      stage = 1;
+      firstData = { raw: "", code: "", qty: "" };
+
+      scanInput.value = "";
+      firstRawView.textContent = "—";
+      firstParsedView.textContent = "—";
+      secondCodeView.textContent = "—";
+
+      resultText.textContent = "—";
+      resultSubText.textContent = "";
+      resultBox.className = "result-box";
+
+      setState("wait", "1回目待受");
+      setGuide("1回目待受", "現品票を読み込んでください");
+
+      clearLog();
+      addLog("reset complete");
+      scanInput.focus();
+    }
+
+    function acceptFirstScan() {
+      const raw = scanInput.value;
+      const parsed = parseFirstLabel(raw);
+
+      firstRawView.textContent = normalizeText(raw);
+
+      if (!parsed.ok) {
+        firstParsedView.textContent = "抽出失敗";
+        resultText.textContent = "1回目 読取エラー";
+        resultSubText.textContent = "現品票から 品番（10〜12桁）＋数量 を抽出できません";
+        resultBox.className = "result-box ng-bg";
+        setState("ng", "1回目エラー");
+        setGuide("1回目待受", "現品票を再度読み込んでください");
+        addLog("1回目抽出失敗: " + normalizeText(raw));
+        beep(220, 220);
+        setTimeout(() => beep(220, 220), 260);
+        scanInput.select();
+        return;
+      }
+
+      firstData = {
+        raw: parsed.raw,
+        code: parsed.code,
+        qty: parsed.qty
+      };
+
+      firstParsedView.textContent = `品番: ${parsed.code} / 数量: ${parsed.qty}`;
+      resultText.textContent = "1回目 読取OK";
+      resultSubText.textContent = "2回目で品番ラベルを読み込んでください";
+      resultBox.className = "result-box";
+
+      addLog(`1回目読取: 品番=${parsed.code} / 数量=${parsed.qty}`);
+
+      stage = 2;
+      setState("wait", "2回目待受");
+      setGuide("2回目待受", "品番ラベルを読み込んでください");
+
+      scanInput.value = "";
+      scanInput.focus();
+      beep(660, 100);
+    }
+
+    function judgeSecondScan() {
+      const raw = scanInput.value;
+      const code = normalizeCode(raw);
+
+      secondCodeView.textContent = code || "—";
+
+      if (!isValidCode(code)) {
+        resultText.textContent = "2回目 読取エラー";
+        resultSubText.textContent = "品番ラベルは 10〜12桁の英数字 で読んでください";
+        resultBox.className = "result-box ng-bg";
+        setState("ng", "2回目エラー");
+        setGuide("2回目待受", "品番ラベルを再度読み込んでください");
+        addLog("2回目形式エラー: " + normalizeText(raw));
+        beep(220, 220);
+        setTimeout(() => beep(220, 220), 260);
+        scanInput.select();
+        return;
+      }
+
+      if (code === firstData.code) {
+        resultText.textContent = "正解";
+        resultSubText.textContent = `一致：${code} / 数量：${firstData.qty}`;
+        resultBox.className = "result-box ok-bg";
+        setState("ok", "一致");
+        setGuide("判定完了", "「最初に戻す」を押して次の読取へ進んでください");
+        addLog(`突合結果: 正解 / 1回目=${firstData.code} / 2回目=${code} / 数量=${firstData.qty}`);
+        beep(1040, 150);
+      } else {
+        resultText.textContent = "不一致";
+        resultSubText.textContent = `1回目：${firstData.code} / 2回目：${code} / 数量：${firstData.qty}`;
+        resultBox.className = "result-box ng-bg";
+        setState("ng", "不一致");
+        setGuide("判定完了", "不一致です。現物・現品票・ラベルを確認し、「最初に戻す」を押してください");
+        addLog(`突合結果: 不一致 / 1回目=${firstData.code} / 2回目=${code} / 数量=${firstData.qty}`);
+        beep(220, 220);
+        setTimeout(() => beep(220, 220), 260);
+      }
+
+      stage = 3;
+      scanInput.blur();
+    }
+
+    function handleScan() {
+      if (stage === 1) {
+        acceptFirstScan();
+      } else if (stage === 2) {
+        judgeSecondScan();
+      }
+    }
+
+    function onEnter(e) {
+      if (e.key === "Enter") {
+        e.preventDefault();
+        handleScan();
+      }
+    }
+
+    let inputTimer = null;
+    scanInput.addEventListener("input", () => {
+      if (stage === 3) return;
+
+      clearTimeout(inputTimer);
+      inputTimer = setTimeout(() => {
+        const val = normalizeText(scanInput.value);
+        if (!val) return;
+
+        if (stage === 1) {
+          const parsed = parseFirstLabel(scanInput.value);
+          if (parsed.ok) {
+            acceptFirstScan();
+          }
+        } else if (stage === 2) {
+          const code = normalizeCode(scanInput.value);
+          if (isValidCode(code)) {
+            judgeSecondScan();
+          }
+        }
+      }, 250);
     });
 
-      // videoに確実に流す
-      videoEl.srcObject = stream;
-      await videoEl.play();
-      log(`video playing. size=${videoEl.videoWidth}x${videoEl.videoHeight}. starting decoder...`);
+    scanInput.addEventListener("keydown", onEnter);
 
-      // iPhone安定：video要素を連続デコード
-      reader = new ZXing.BrowserMultiFormatReader(
-        new Map([[ZXing.DecodeHintType.POSSIBLE_FORMATS, FORMATS]])
-      );
-
-      await reader.decodeFromVideoElementContinuously(videoEl, (result, err) => {
-        if (result?.getText){
-          log("DECODE: " + result.getText());   // ← 追加
-          setBadge('wait', expected ? '現品票をスキャンしてください' : '正解をスキャンしてください');
-          handleScan(result.getText());
-          return;
-        }
-        // NotFoundException は「このフレームにバーコードが無い」なので無視でOK
-        if (err && err.name && err.name !== "NotFoundException") {
-          log("ERR: " + err.name + " " + (err.message || ""));
-        }
-      });
-
-      setBadge('wait','正解をスキャンしてください');
-      log("decoder running.");
-
-    }catch(e){
-      log(`ERROR: ${e?.name || ""} ${e?.message || e}`);
-      alert(`カメラ起動失敗: ${e?.name || ""}\n${e?.message || e}`);
-      btnStart.disabled = false;
-      btnStop.disabled = true;
-    }
-  }
-
-  async function stopCamera(){
-    try{
-      if (reader){
-        reader.reset();
-        reader = null;
+    btnFocus.addEventListener("click", () => {
+      if (stage !== 3) {
+        scanInput.focus();
+        addLog("input focused");
       }
-    }catch(e){}
+    });
 
-    try{
-      if (stream){
-        stream.getTracks().forEach(t => t.stop());
-        stream = null;
+    btnReset.addEventListener("click", resetAll);
+
+    document.addEventListener("click", (e) => {
+      const tag = e.target.tagName;
+      if (tag === "INPUT" || tag === "BUTTON") return;
+      if (stage !== 3) {
+        scanInput.focus();
       }
-    }catch(e){}
+    });
 
-    videoEl.srcObject = null;
-
-    btnStart.disabled = false;
-    btnStop.disabled = true;
-    setBadge('wait','停止');
-    log("stopped.");
-  }
-
-  btnStart.addEventListener('click', startCamera);
-  btnStop.addEventListener('click', stopCamera);
-  btnReset.addEventListener('click', resetAll);
-
-  resetAll();
-</script>
+    resetAll();
+  </script>
 </body>
 </html>
-
-
